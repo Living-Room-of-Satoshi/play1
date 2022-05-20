@@ -90,8 +90,11 @@ public class MemcachedImpl implements CacheImpl {
     }
 
     public void initClient() throws IOException {
-        System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.Log4JLogger");
-        
+        String loggerImpl = System.getProperty("net.spy.log.LoggerImpl");
+        if (loggerImpl == null) {
+            System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+        }
+
         List<InetSocketAddress> addrs;
         if (Play.configuration.containsKey("memcached.host")) {
             addrs = AddrUtil.getAddresses(Play.configuration.getProperty("memcached.host"));
